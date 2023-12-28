@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import  { useState } from 'react';
 import {
@@ -31,12 +31,28 @@ const Nav = () => {
     
   
  
+   useEffect(()=>{
+    const storedusername=localStorage.getItem("UserName")
+    if(storedusername){
+      setLoggedin(true)
+      setUsername(storedusername)
+    }else{
+      setLoggedin(false)
+    }
+
+   },[setLoggedin,setUsername])
+
+
    
     const userlogout=()=>{
-       setUsername("");        
-       setLoggedin(!Loggedin)   
+      localStorage.removeItem('UserName');
+      setUsername('');
+      localStorage.removeItem("jwt")
+      localStorage.removeItem("userId")
+      localStorage.removeItem("UserEmail")
+      setLoggedin(!Loggedin);
        }
-
+ 
 
   return (
     <div>
@@ -103,23 +119,25 @@ const Nav = () => {
           </MDBNavbarNav>
 
 
-          {Loggedin != true ?   (      //(here loggedin already as true ,which means it shows login because there is no user there,when it changes to false its shows logpout and cart,because there is user)
+          {!Loggedin ?   (     
             <> 
 
-<img className='me-5' src='https://img.icons8.com/?size=30&id=TdZUZUq3XNh6&format=gif'  width={'30px'} height={'30px'}   onClick={()=>{
-              navigate('/cart')}}/>
             {/* <MDBBtn className='me-5 pe-5' color='info' onClick={userlogout}>Logout</MDBBtn>  */}
-            <i className="fas fa-sign-out-alt fa-lg me-5" style={{color:"#D10000"}} onClick={userlogout}></i>
+           
+            <i className="fas fa-sign-in-alt fa-lg me-5" style={{color: "#167D7F"}}  onClick={()=>navigate('/login')}></i>
             
            
                </>):   (           
                
                <>
                {/* <MDBBtn className='me-5 ' onClick={()=>navigate('/login')}>SignIn</MDBBtn>    */}
-               <i className="fas fa-sign-in-alt fa-lg me-5" style={{color: "#167D7F"}}  onClick={()=>navigate('/login')}></i>
+               <i className="fas fa-sign-out-alt fa-lg me-5" style={{color:"#D10000"}} onClick={userlogout}></i>
                </>
                )}
-           
+             
+             
+                <img className='me-5' src='https://img.icons8.com/?size=30&id=TdZUZUq3XNh6&format=gif'  width={'30px'} height={'30px'}   onClick={()=>{
+              navigate('/cart')}}/>
 
 
             <span>

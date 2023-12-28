@@ -5,7 +5,7 @@ const port=5000;
 const adminrout=require("./Routes/AdminRoute")
 const mongoose=require("mongoose")
 const userrout=require("./Routes/UserRouter")
-
+const cors=require("cors")
 
 
 
@@ -19,11 +19,11 @@ async function main(){
 }
 
  
-
+app.use(cors())
 app.use(express.json())
 
 app.use("/api/admin",adminrout)
-app.use("/api/users",userrout)
+app.use("/api/users",userrout) 
 
 
 

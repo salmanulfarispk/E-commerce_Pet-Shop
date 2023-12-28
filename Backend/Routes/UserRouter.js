@@ -12,7 +12,7 @@ router
 
 .post('/register',Trycatchmiddleware(usercontroler.userRegister))
 .post('/login',Trycatchmiddleware(usercontroler.userlogin))
-
+  
     
 .use(verifyToken)
 

@@ -26,6 +26,16 @@ import AdminCat from './Admin/AdminCat';
 import AdminuserList from './Admin/AdminuserList';
 import AdminAddpro from './Admin/AdminAddpro';
 import AdminEdit from './Admin/AdminEdit';
+import axios from "axios"
+import toast,{Toaster} from 'react-hot-toast';
+
+export const Axios=axios.create({
+baseURL: process.env.REACT_BASE_URL,
+headers: {
+  "Content-Type":"application/json",
+  "Authorization":localStorage.getItem("jwt")
+}
+})
 
 
 
@@ -35,7 +45,7 @@ function App() {
   const[products,setProducts]=useState(ProductDatas)
   const[cartt,setCart]=useState([])
   const [user,setUser]=useState([])
-  const [Loggedin,setLoggedin]=useState(true)
+  const [Loggedin,setLoggedin]=useState(false)
   const [username,setUsername]=useState([])
 
   return (
@@ -44,8 +54,12 @@ function App() {
     
 
   <MyContext.Provider value={{products,setProducts,cartt,setCart,user,setUser,Loggedin,setLoggedin,username,setUsername}}>
-   <Routes>
 
+<Toaster position="top-center" reverseOrder={false}/>
+  
+  
+  
+ <Routes>
 
 <Route path='/' element={<Home/>}/>
 <Route path='/Dogsfood' element={<Dogfoods/>}/>

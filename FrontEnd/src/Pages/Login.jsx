@@ -1,68 +1,86 @@
-import React, { useContext } from 'react'
+
 import { MDBInput,MDBBtn,MDBContainer,MDBCol,MDBRow,MDBCard,MDBCardBody } from 'mdb-react-ui-kit';
 import { useNavigate } from 'react-router-dom';
-import { MyContext } from '../Context';
+import toast from 'react-hot-toast';
 import Nav from '../components/Nav';
-
+import { Axios } from '../App';
 
 
 
 const Login = () => {
 
+
+
   const navigate=useNavigate()
-  const {user,setUsername,setLoggedin}=useContext(MyContext)
-  // console.log(user);
-
-   const getvalue=(event)=>{
+  const login = async (event) => {
     event.preventDefault();
-   
+  
+    const email = event.target.typeEmail.value.trim();
+    const password = event.target.typePassword.value;
+    
+  
+    const AdminEmail = process.env.REACT_APP_ADMIN_EMAIL;
+    // console.log(AdminEmail);
+  
+    if (email === "" || password === "") {
+      toast.error("Input field is empty");
+      return;
+    }
+  
+    let url = "http://localhost:5000/api/users/login";
+  
+    if (email === AdminEmail) {
+       url = "http://localhost:5000/api/admin/login";
+    }
+  
+    try {
+      const payload = { email: email, password: password };
+  
+      const response = await Axios.post(url, payload);
+      // console.log(response);
+  
+      if (response.status ===200) {
+         if (email === AdminEmail) {
+          localStorage.setItem("role", "admin");
+          localStorage.setItem("Admin jwt", response.data.token);
 
-    const getemail=event.target.typeEmail.value;
-    const getpass=event.target.typePassword.value;
+          navigate("/adminhome");
+          toast.success("Admin login successfully!");
 
-      // console.log(getemail);
-      // console.log(getpass);
-
-      const filteredUser=user.filter((item)=>{
-        return item.email === getemail
-      })
-
-   if(filteredUser.length !== 0){
-       
-      if (filteredUser[0].password == getpass){
-         setLoggedin((preValue)=>(preValue = !preValue));
-          
-         navigate('/') 
-         setUsername(filteredUser[0].name)
-
-      }else{
-        alert("invalid details")
+         } else {
+          localStorage.setItem("userId", response.data.data.id);
+          localStorage.setItem("jwt", response.data.data.token);
+          localStorage.setItem("UserEmail", response.data.data.email);
+          localStorage.setItem("UserName", response.data.data.username);
+  
+          setTimeout(() => {
+            localStorage.removeItem("Admin jwt");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("jwt");
+            localStorage.removeItem("UserEmail");
+            localStorage.removeItem("UserName");
+          }, 3600000);
+  
+          navigate("/");
+          toast.success("Login successfully");
+        }
+      } else {
+        
+        toast.error("Login Failed:",response.error);
       }
-    } else if (getemail === "admin@gmail.com" && getpass === "admin") {
-      navigate("/adminhome");  //to admin home page
-   
+    } catch (error) {
+      console.log("Error:",error);
+      toast.error("Invalid email or password");
+    }
+  };
+  
 
-
-   }else{
-    alert("user not available")
-   }
-
-
-
-
-
-   }
- 
 
   return (
     <>
     <Nav/>
     <div className='bg-light'>
       
-
-
-
-
 
 <MDBContainer className="my-3 gradient-form">
 
@@ -76,7 +94,7 @@ const Login = () => {
           style={{width: '275px'}} alt="logo" className=' mb-2'/>
         {/* <h4 className="mt-1 mb-5 pb-1">We are The Petsy </h4> */}
       </div>
-      <form onSubmit={getvalue}>
+      <form onSubmit={login}>
       <p>Please login to your account</p>
 
     

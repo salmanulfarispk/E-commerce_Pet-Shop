@@ -15,20 +15,21 @@ module.exports={
 
   login: async (req,res)=>{
     const {email,password}=req.body;
-      // console.log("admin:",req.body);
-
-   if( email === process.env.ADMIN_EMAIL &&   password === process.env.ADMIN_PASSWORD){
+      // console.log("admin:",req.body);  
+     
+   if( email === process.env.ADMIN_EMAIL &&   password === process.env.ADMIN_PASSWORD){ 
       
-      const token= jwt.sign(
-       { email },
-       process.env.ADMIN_ACCESS_TOKEN_SECRET  
+      const token= jwt.sign( 
+       { email }, 
+       process.env.ADMIN_ACCESS_TOKEN_SECRET    
       );
+      // console.log(token);   
 
       return res.status(200).json({
         status:"success",
         message:"Admin login succesfully",
         token:token
-      });
+      }); 
 
    }else{
     return res.status(404).json({
@@ -244,4 +245,4 @@ status: async(req,res)=>{
 },
 
   
-}
+}  

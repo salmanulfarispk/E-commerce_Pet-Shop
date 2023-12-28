@@ -14,12 +14,13 @@ let sValue={}
 
 
 module.exports={
-
+ 
 //user registration
 
 userRegister: async(req,res)=>{
 
 const {value,error}= joiuserSchema.validate(req.body);
+// console.log(value); 
 
  if(error){
     return res.status(400).json({
@@ -27,7 +28,7 @@ const {value,error}= joiuserSchema.validate(req.body);
         message:"invalid user input data.please check the data"
     });
   
- }
+ }  
 
  try{
 
@@ -36,10 +37,9 @@ const {value,error}= joiuserSchema.validate(req.body);
 
 
    const hashedPassword = await bcrypt.hash(password, 10);
-
    await userSchemaData.create({
       name,
-      email,
+      email, 
       username,
       password:hashedPassword ,
    });
@@ -48,14 +48,14 @@ const {value,error}= joiuserSchema.validate(req.body);
       status:"success",
       message:"user registration succesfull"
      })
- 
+   
  }catch{
     res.status(500).json({
       status:"error occured",
       message:"internal server error"
    })
  }
-
+   
 
 },
 
@@ -64,17 +64,19 @@ const {value,error}= joiuserSchema.validate(req.body);
 
 userlogin: async(req,res)=>{
    const {value,error}= joiuserSchema.validate(req.body);
+   // console.log("value:",value);
    if(error){
      return res.json(error.message)
    }
-   const {email,password}=value;
+   const {email,password}=value; 
    const user= await userSchemaData.findOne({
       email:email
    })
-    const id=user.id;
-
+    const id=user._id; 
+const username=user.username
+// console.log(username);
     if(!user){
-     return  res.status(400).json({
+     return  res.status(400).json({ 
          status:"error",
          message:"user not found"
       })
@@ -96,7 +98,8 @@ userlogin: async(req,res)=>{
     }
       
     const token= jwt.sign({email:user.email},process.env.USER_ACCES_TOKEN_SECRET,{expiresIn:8500})
-    
+   //  console.log(token);
+
     res.setHeader(
       "Set-Cookie",
       cookie.serialize("token", token, {
@@ -106,7 +109,7 @@ userlogin: async(req,res)=>{
             res.status(200).json({
                status:"success",
                message:"login succesfull",
-               data:{id,email,token}
+               data:{id,email,token,username}
             })
 },
 
