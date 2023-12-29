@@ -144,6 +144,7 @@ module.exports={
 
   viewAllproducts: async(req,res)=>{
     const productlist= await Allproducts.find()
+    // console.log(productlist);
     if(!productlist){
       return res.status(404).json({
         status:"error",
@@ -153,7 +154,7 @@ module.exports={
     res.status(200).json({
       status:"success",
       message:"products founded succesfully",
-      datas:productlist
+      data:productlist
     })
   },
 

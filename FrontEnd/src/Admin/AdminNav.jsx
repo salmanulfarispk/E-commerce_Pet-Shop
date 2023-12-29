@@ -62,13 +62,15 @@ const AdminNav = () => {
                 <MDBNavbarLink href='#' className='ms-5 '  onClick={()=>navigate('/AdminuserList')}>USERS LIST</MDBNavbarLink>
               </MDBNavbarItem>
 
-              <MDBBtn outline rounded className=' ms-auto' color='danger ' onClick={()=>navigate('/login')}>
-                      LOGOUT
-                 </MDBBtn>
+              <MDBBtn outline rounded className='ms-auto' color='danger' onClick={() => {
+                     localStorage.removeItem("Admin jwt");
+                     localStorage.removeItem("role");
+                    navigate('/login');
+                      }} >
+                  
+                  LOGOUT
+                </MDBBtn>
                 
-             
-
-
 
             </MDBNavbarNav>
           </MDBCollapse>

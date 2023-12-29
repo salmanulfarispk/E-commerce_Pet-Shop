@@ -1,18 +1,43 @@
-import React, { useContext } from 'react'
+
 import {  MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-import { MyContext } from '../Context';
+
 import AdminNav from './AdminNav';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 
 const AdminAllproducts = () => {
-    const {products,setProducts}=useContext(MyContext)
-        const navigate=useNavigate()
     
-    const deleteitem=(id)=>{
-      setProducts((i)=>i.filter((item)=> item.id !==id
-      ))}
-      
+  const navigate=useNavigate()
+    const [products,setProducts]=useState([])
+
+const fetchingProdts=async()=>{
+  try{
+    const jwtToken={
+      headers:{
+        Authorization:`${localStorage.getItem("Admin jwt")}`
+      }
+    };
+    
+    const response=await axios.get("http://localhost:5000/api/admin/products",jwtToken)
+     if(response.status === 200){
+      setProducts(response.data.data)
+     }
+
+  }catch(err){
+    console.log(err);
+    toast.error("Error in Fetching All products")
+  }
+
+}
+
+  useEffect(()=>{
+    fetchingProdts();
+  },[])
+
+   
   return (
     <div>
    <div><AdminNav/></div><br/><br/>
@@ -25,27 +50,27 @@ const AdminAllproducts = () => {
           <th scope='col'className='fw-bold'>Category</th>
           <th scope='col'className='fw-bold'>Description</th>
           <th scope='col'className='fw-bold'>Price</th>
-          <th scope='col' className='fw-bold'>Offer Price</th>
+          {/* <th scope='col' className='fw-bold'>Offer Price</th> */}
           <th scope='col'className='fw-bold ms-3 '>Edit</th>
           <th scope='col'className='fw-bold ms-3'>Delete</th>
 
 
         </tr>
       </MDBTableHead>
-      {products.map((item)=>
       <MDBTableBody>
+      {products && products.map((item)=>
         <tr>
           <td>
           
 
-            <p className='mb-1'><strong> {item.id}</strong></p>
+            <p className='mb-1'><strong> {item._id}</strong></p>
 
           </td>
           <td>
            
               <div className='d-flex align-items-center'>
               <img
-                src={item.src}
+                src={item.image}
                 alt=''
                 style={{ width: '45px', height: '45px' }}
                 className='rounded-circle'
@@ -55,14 +80,14 @@ const AdminAllproducts = () => {
           <td>
        
         <div >
-                <p className=' mb-1'>{item.name}</p>
+                <p className=' mb-1'>{item.title}</p>
                 
               </div>
 
 
           </td>
           <td>
-                 {item.type}
+                 {item.category}
           </td>
           <td>
        
@@ -77,10 +102,10 @@ const AdminAllproducts = () => {
 
           </td>
 
-          <td>
+          {/* <td>
                <p>{item.price2}</p>
 
-          </td>
+          </td> */}
 
           <td>
             
@@ -109,8 +134,8 @@ const AdminAllproducts = () => {
         </tr>
        
    
+       )}
       </MDBTableBody>
-      )}
     </MDBTable>
 
 

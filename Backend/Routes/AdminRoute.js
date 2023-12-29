@@ -11,11 +11,11 @@ const imageuploading=require("../middlewares/imageUploader/imageuploader")
 
 
 router
-
+  
 .post("/login",Trycatchmiddleware(admincontroller.login))
 
-
-.use(verifytoken) 
+  
+.use(verifytoken)  
 
 .get("/Allusers",Trycatchmiddleware(admincontroller.viewallusers))
 .get("/Allusers/:id",Trycatchmiddleware(admincontroller.viewById)) 
