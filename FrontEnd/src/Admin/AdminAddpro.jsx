@@ -1,86 +1,111 @@
-import React, { useContext } from 'react'
+
 import {
    
     MDBInput,
       MDBBtn
 
   } from "mdb-react-ui-kit";
-import { MyContext } from '../Context';
+
 
 import AdminNav from './AdminNav';
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const AdminAddpro = () => {
 
-  const {products,setProducts}=useContext(MyContext)
+   const [products,setProducts]=useState([])
+   const navigate=useNavigate()
+
+
+   const [title,settitle]=useState("")
+   const[image,setimage]=useState(null)
+   const[category,setcategory]=useState("")
+   const [price,setprice]=useState("")
+   const[description,setdescription]=useState("")
+
+
+   const imagechanges=(e)=>{
+    const selectedimage=e.target.files[0];
+    setimage(selectedimage)
+   };
+
+
+  const handlesubmit=async(item)=>{
+    item.preventDefault();
+    if(!title || !image || !category || !price || !description){
+      toast.error("please fill all fields");
+      return;
+    }
   
-  const handleAdd=(event)=>{
 
-     event.preventDefault();
+   const formData=new FormData()
+     formData.append("title",title)
+     formData.append("image",image)
+     formData.append("category",category)
+     formData.append("price",price)
+     formData.append("description",description)
 
-    const imgproduct=event.target.src.value;
-    const nameproduct=event.target.nametext.value;
-    const typeproduct=event.target.typepro.value;
-    const descriptproduct=event.target.descript.value;
-    const pricepro=event.target.typeNumber.value;
-    const priceoff=event.target.offNumber.value;
-    
-           
-    event.target.reset();
- 
-    if(typeproduct){
-      setProducts([
-             ...products,
-        {
-             src:imgproduct,
-             name:nameproduct,
-             type:typeproduct,
-             description:descriptproduct,
-             price:pricepro,
-             price2:priceoff,
-            
-             id:products.length + 1
 
-            }]
-      )
-    }else{
-      alert("Select category")
+     try{
+      const jwtToken={
+        headers:{
+          Authorization:`${localStorage.getItem("Admin jwt")}`
+        }
+      };
+
+      const response=await axios.post("http://localhost:5000/api/admin/products",formData,jwtToken)
+      if(response.status===201){
+        toast.success("succesfully product added")
+        navigate("/adminaddpro")
+      }else{
+        toast.error("failed to add product")
+      }
+    }catch(error){
+      console.log(error)
+      toast.error("Failed to add product")
     }
 
+    };
 
-  }
-
-
+    const changingcategory=(e)=>{
+       setcategory(e.target.value)
+    }
    
   return (
     <div>
         <div><AdminNav/></div><br/><br/><br/>
     <h3 className='mt-3 '>Add products</h3><br/>
-    <form className='w-50 ms-2' onSubmit={handleAdd}>
-      <MDBInput id='src'type='text' wrapperClass='mb-4' label='image' required />
-      <MDBInput type='text' id='nametext' wrapperClass='mb-4' label='Name' required />
+    <form className='w-50 ms-2' >
+      <label>image</label>
+      <MDBInput id='src'type='file' wrapperClass='mb-4' onChange={imagechanges} required />
+      <MDBInput type='text' id='nametext' wrapperClass='mb-4' label='title' onChange={(e)=>settitle(e.target.value)} required />
 
       {/* <div className="mb-3"> */}
-          <label htmlFor="type" className="form-label ">Type:</label>
-          <select  id="typepro">
+          <label htmlFor="type" className="form-label ">category</label>
+          <select  id="typepro" onChange={changingcategory}>
                 <option value="">select category</option>
                 <option value="dog">Dog</option>
                 <option value="cat">Cat</option>
-                {/* <option value="sofa">Sofa</option>
-                <option value="bed">Bed</option>
-                <option value="wardrobe">wardrobe</option> */}
+              
          </select>
         {/* </div> */}
        
 
-      <MDBInput wrapperClass='mb-4'  id='descript' rows={3} label='Description' required />
-      <MDBInput label='Price' id='typeNumber' type='number'  wrapperClass='mb-4' required />
-      <MDBInput label='Offer Price' id='offNumber' type='number'  wrapperClass='mb-4'required />
+      <MDBInput wrapperClass='mb-4'  id='descript' rows={3} label='description'  onChange={(e)=>setdescription(e.target.value)}  required />
+      <MDBInput label='Price' id='typeNumber' type='number'  wrapperClass='mb-4' onChange={(e)=>setprice(e.target.value)} required />
+      {/* <MDBInput label='Offer Price' id='offNumber' type='number'  wrapperClass='mb-4'required /> */}
       
       
       
-      <MDBBtn  className='mb-4  ms-2 ' color='success'
+      <MDBBtn  className='mb-4  ms-2 ' color='success' onClick={handlesubmit}
       >
       Add
+      </MDBBtn>
+      <MDBBtn  className='mb-4  ms-2 ' onClick={()=>navigate('/adminallproducts')}
+      >
+         Back to All products
       </MDBBtn>
       </form>
   

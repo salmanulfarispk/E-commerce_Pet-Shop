@@ -2,28 +2,46 @@
 import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 
 import AdminNav from './AdminNav';
-import { useContext } from 'react';
-import { MyContext } from '../Context';
+import { useEffect, useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 const AdminCat = () => {
 
-   const {products,setProducts}=useContext(MyContext)
-     const navigate=useNavigate()
-    
-       
-   const CatProducts=products.filter((item)=>(
-        
-    item.type.toLowerCase() == "cat"
-
-   ))
+const [products,setProducts]=useState([])
+// console.log(products);
+const navigate=useNavigate()
+const categoryname="cat"
 
 
+const productByCategory=async()=>{
+try {
+ const jwtToken={
+  headers:{
+    Authorization:`${localStorage.getItem("Admin jwt")}`
+  }
+ };
+   
+ const response=await axios.get(`http://localhost:5000/api/admin/products/category/${categoryname}`,jwtToken)
+ if(response.status===200){
+  setProducts(response.data.data)
+ }
 
-    const deleteitem=(id)=>{
-        setProducts((i)=>i.filter((item)=> item.id !==id
-        ))}
+  
+} catch (error) {
+  console.log("error",error);
+  toast.error(error)
+}
+
+}
+
+useEffect(()=>{
+  productByCategory();
+},[])
+
 
   return (
     <div>
@@ -40,7 +58,7 @@ const AdminCat = () => {
           <th scope='col'className='fw-bold'>Category</th>
           <th scope='col'className='fw-bold'>Description</th>
           <th scope='col'className='fw-bold'>Price</th>
-          <th scope='col' className='fw-bold'>Offer Price</th>
+          {/* <th scope='col' className='fw-bold'>Offer Price</th> */}
           <th scope='col'className='fw-bold ms-3 '>Edit</th>
           <th scope='col'className='fw-bold ms-3'>Delete</th>
 
@@ -48,13 +66,13 @@ const AdminCat = () => {
         </tr>
       </MDBTableHead>
 
-      {CatProducts.map((item)=>(
-      <MDBTableBody>
+      {products.map((item,index)=>(
+      <MDBTableBody  key={index}>
         <tr>
           <td>
           
 
-            <p className='mb-1'><strong> {item.id}</strong></p>
+            <p className='mb-1'><strong> {item._id}</strong></p>
 
           </td>
           <td>
@@ -63,7 +81,7 @@ const AdminCat = () => {
 
               <div className='d-flex align-items-center'>
               <img
-                src={item.src}
+                src={item.image}
                 alt=''
                 style={{ width: '45px', height: '45px' }}
                 className='rounded-circle'
@@ -73,14 +91,14 @@ const AdminCat = () => {
           <td>
            
         <div >
-                <p className=' mb-1'>{item.name}</p>
+                <p className=' mb-1'>{item.title}</p>
                 
               </div>
 
 
           </td>
           <td>
-              {item.type}
+              {item.category}
           </td>
           <td>
            
@@ -96,16 +114,16 @@ const AdminCat = () => {
 
           </td>
 
-          <td>
+          {/* <td>
                <p>{item.price2}</p>
 
-          </td>
+          </td> */}
 
           <td>
             
           
              <MDBBtn outline className='mx-2' color='success' onClick={()=>{
-                navigate(`/adminedit/${item.id}`)
+                navigate(`/adminedit/${item._id}`)
              }}>
        Edit
       </MDBBtn>
@@ -114,8 +132,10 @@ const AdminCat = () => {
      </td>
              <td>
              <MDBBtn outline className='mx-2' color='danger'
-              onClick={()=>{
-                deleteitem(item.id)}}>
+             onClick={() => {
+              console.log("Deleting item at index", index);
+              setProducts(pro => pro.filter((a, i) => i !== index));
+            }}>
         Delete
       </MDBBtn>
       </td>

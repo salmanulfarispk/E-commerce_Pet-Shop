@@ -12,7 +12,7 @@ const AdminAllproducts = () => {
     
   const navigate=useNavigate()
     const [products,setProducts]=useState([])
-
+  //  console.log(products);
 const fetchingProdts=async()=>{
   try{
     const jwtToken={
@@ -20,8 +20,10 @@ const fetchingProdts=async()=>{
         Authorization:`${localStorage.getItem("Admin jwt")}`
       }
     };
+     
     
     const response=await axios.get("http://localhost:5000/api/admin/products",jwtToken)
+    console.log(response)
      if(response.status === 200){
       setProducts(response.data.data)
      }
@@ -36,6 +38,32 @@ const fetchingProdts=async()=>{
   useEffect(()=>{
     fetchingProdts();
   },[])
+
+  const deleteProduct = async (productId) => {
+    try {
+      const jwtToken = {
+        headers: {
+          Authorization: `${localStorage.getItem("Admin jwt")}`,
+        },
+      };
+  
+      const response = await axios.delete(`http://localhost:5000/api/admin/products`,{...jwtToken,data:{productId}});
+      // console.log(response)
+      console.log(response.data.data) 
+  
+      if (response.status === 200) {
+        setProducts(response.data.data);
+        toast.success("Product Deleted successfully");
+        fetchingProdts();
+      } else {
+        toast.error("Failed to delete product");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete product");
+    }
+  };
+  
 
    
   return (
@@ -56,10 +84,10 @@ const fetchingProdts=async()=>{
 
 
         </tr>
-      </MDBTableHead>
+      </MDBTableHead>   
       <MDBTableBody>
       {products && products.map((item)=>
-        <tr>
+        <tr key={item._id}>
           <td>
           
 
@@ -111,7 +139,7 @@ const fetchingProdts=async()=>{
             
             
              <MDBBtn outline className='mx-2' color='info' onClick={()=>
-               navigate(`/adminedit/${item.id}`)
+               navigate(`/adminedit/${item._id}`)
               
              }>
        Edit
@@ -122,24 +150,15 @@ const fetchingProdts=async()=>{
              <td>
              <MDBBtn outline className='mx-2' color='danger'
               onClick={()=>{
-                deleteitem(item.id)}}>
+                deleteProduct(item._id)}}>
         Delete
       </MDBBtn>
       </td>
-
-
-
-
-
         </tr>
-       
    
        )}
       </MDBTableBody>
     </MDBTable>
-
-
-
     </div>
   )
 }

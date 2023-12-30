@@ -14,7 +14,7 @@ router
   
 .post("/login",Trycatchmiddleware(admincontroller.login))
 
-  
+    
 .use(verifytoken)  
 
 .get("/Allusers",Trycatchmiddleware(admincontroller.viewallusers))
@@ -24,8 +24,8 @@ router
 .delete("/products",Trycatchmiddleware(admincontroller.deleteproduct))
 .put("/products",Trycatchmiddleware(admincontroller.editproducts))
 .get("/orders",Trycatchmiddleware(admincontroller.viewOrderDetails))
-.get("/RevenueStatus",Trycatchmiddleware(admincontroller.status))
+.get("/RevenueStatus",Trycatchmiddleware(admincontroller.status)) 
 
- 
+ .get("/products/category/:categoryname",Trycatchmiddleware(admincontroller.productByCategory))
   
 module.exports=router

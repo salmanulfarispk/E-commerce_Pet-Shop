@@ -83,7 +83,7 @@ module.exports={
       })   
 
     },
-
+ 
   //Add/create products
 
     addproducts: async(req,res)=>{
@@ -109,7 +109,7 @@ module.exports={
         res.status(201).json({
           status:"success",
           message:"products created succesfully",
-          data:Allproducts
+          data:Allproducts 
         })
  
     },
@@ -118,16 +118,17 @@ module.exports={
    //Admin delete products
     deleteproduct: async(req,res)=>{
       const {id}=req.body;
-      //  console.log(productid); 
+       console.log(id);  
 
       if(!id || !mongoose.Types.ObjectId.isValid(id)){
         res.status(404).json({
           status:"error",
-          "message":"invalid product Id"
+          "message":"invalid product Id" 
         })
-      }
-      const productdelete= await Allproducts.findOneAndDelete({_id:id})
-      if(!productdelete){
+      } 
+      const productdelete= await Allproducts.findOneAndDelete({_id: id})
+      console.log( productdelete)
+      if(!productdelete){ 
         return res.status(404).json({
           status:"product not found in database"
         })
@@ -245,5 +246,27 @@ status: async(req,res)=>{
 
 },
 
+//admin get product by category
+productByCategory:async(req,res)=>{
+
+const category=req.params.categoryname;
+const products=await Allproducts.find({category:category})
+if(!products){
+  return res.status(404).json({
+    message:"products not found"
+  })
+}
+
+return res.status(200).json({
+  status:"success",
+  message:"product fetched succesfully",
+  data:products
+})
+
+
+
+
+},
+
   
-}  
+}   
