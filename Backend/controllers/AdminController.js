@@ -84,7 +84,7 @@ module.exports={
 
     },
  
-  //Add/create products
+  //Add products
 
     addproducts: async(req,res)=>{
 
@@ -114,17 +114,19 @@ module.exports={
  
     },
 
-
-   //Admin delete products
+ 
+   //Admin delete products   
     deleteproduct: async(req,res)=>{
-      const {id}=req.body;
-       console.log(id);  
+      
+      const {id}=req.params; 
 
+      //  console.log(id);   
+ 
       if(!id || !mongoose.Types.ObjectId.isValid(id)){
         res.status(404).json({
           status:"error",
           "message":"invalid product Id" 
-        })
+        }) 
       } 
       const productdelete= await Allproducts.findOneAndDelete({_id: id})
       console.log( productdelete)
@@ -193,7 +195,7 @@ module.exports={
 
       res.status(200).json({
         status:"success",
-        message:"product succesfully updated/edited"
+        message:"product succesfully updated/edited",
       }) 
 
 
@@ -267,6 +269,27 @@ return res.status(200).json({
 
 
 },
+
+
+//product by id
+
+productByid:async(req,res)=>{
+  const productid=req.params.id;
+  const product=await Allproducts.findById(productid)
+  if(!product){
+    return res.status(404).json({
+      status:"error",
+      message:"product not found"
+    })
+  }
+
+  return res.status(200).json({
+     status:"success",
+     message:"product got succesfully",
+     data:product
+  })
+
+}
 
   
 }   

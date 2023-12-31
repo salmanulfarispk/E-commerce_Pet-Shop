@@ -43,6 +43,34 @@ useEffect(()=>{
 },[])
 
 
+
+const deleteProduct = async (productId) => {
+  try {
+    const jwtToken = {
+      headers: { 
+        Authorization: `${localStorage.getItem("Admin jwt")}`,
+      },
+    };
+
+   
+    const response = await axios.delete(`http://localhost:5000/api/admin/product/${productId}`, jwtToken);
+
+    // console.log(response)
+
+    if (response.status === 200) {
+      setProducts(response.data.data);
+      toast.success("Product Deleted successfully");
+      productByCategory();
+      
+    } else {
+      toast.error("Failed to delete product");
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to delete product");
+  }
+};
+
   return (
     <div>
 
@@ -58,7 +86,7 @@ useEffect(()=>{
           <th scope='col'className='fw-bold'>Category</th>
           <th scope='col'className='fw-bold'>Description</th>
           <th scope='col'className='fw-bold'>Price</th>
-          {/* <th scope='col' className='fw-bold'>Offer Price</th> */}
+         
           <th scope='col'className='fw-bold ms-3 '>Edit</th>
           <th scope='col'className='fw-bold ms-3'>Delete</th>
 
@@ -66,9 +94,9 @@ useEffect(()=>{
         </tr>
       </MDBTableHead>
 
-      {products.map((item,index)=>(
-      <MDBTableBody  key={index}>
-        <tr>
+      {products && products.map((item)=>(
+      <MDBTableBody>
+        <tr key={item._id}>
           <td>
           
 
@@ -132,10 +160,9 @@ useEffect(()=>{
      </td>
              <td>
              <MDBBtn outline className='mx-2' color='danger'
-             onClick={() => {
-              console.log("Deleting item at index", index);
-              setProducts(pro => pro.filter((a, i) => i !== index));
-            }}>
+              onClick={()=>{
+                deleteProduct(item._id)}}
+            >
         Delete
       </MDBBtn>
       </td>

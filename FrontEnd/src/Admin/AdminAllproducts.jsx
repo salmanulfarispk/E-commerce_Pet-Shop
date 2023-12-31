@@ -1,4 +1,3 @@
-
 import {  MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 
 import AdminNav from './AdminNav';
@@ -23,7 +22,7 @@ const fetchingProdts=async()=>{
      
     
     const response=await axios.get("http://localhost:5000/api/admin/products",jwtToken)
-    console.log(response)
+    // console.log(response)
      if(response.status === 200){
       setProducts(response.data.data)
      }
@@ -42,15 +41,14 @@ const fetchingProdts=async()=>{
   const deleteProduct = async (productId) => {
     try {
       const jwtToken = {
-        headers: {
+        headers: { 
           Authorization: `${localStorage.getItem("Admin jwt")}`,
         },
       };
   
-      const response = await axios.delete(`http://localhost:5000/api/admin/products`,{...jwtToken,data:{productId}});
-      // console.log(response)
-      console.log(response.data.data) 
-  
+     
+      const response = await axios.delete(`http://localhost:5000/api/admin/product/${productId}`, jwtToken);
+
       if (response.status === 200) {
         setProducts(response.data.data);
         toast.success("Product Deleted successfully");
@@ -78,7 +76,6 @@ const fetchingProdts=async()=>{
           <th scope='col'className='fw-bold'>Category</th>
           <th scope='col'className='fw-bold'>Description</th>
           <th scope='col'className='fw-bold'>Price</th>
-          {/* <th scope='col' className='fw-bold'>Offer Price</th> */}
           <th scope='col'className='fw-bold ms-3 '>Edit</th>
           <th scope='col'className='fw-bold ms-3'>Delete</th>
 

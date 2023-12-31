@@ -1,24 +1,74 @@
 
-import { MDBBadge, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import { MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 
 import AdminNav from './AdminNav';
-import { useContext } from 'react';
-import { MyContext } from '../Context';
-import { useNavigate } from 'react-router-dom';
 
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState,useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export const Admindog = () => {
   
-     const {products,setProducts}=useContext(MyContext)
-     const navigate=useNavigate()
+const [products,setProducts]=useState([])
+// console.log(products);
+const navigate=useNavigate()
+const categoryname="dog"
 
-     const Dogproducts=products.filter((item)=>(
-      item.type.toLowerCase() == "dog"
-     ))
 
-    const deleteitem=(id)=>{
-        setProducts((i)=>i.filter((item)=> item.id !==id
-        ))}
+const productByCategory=async()=>{
+try {
+ const jwtToken={
+  headers:{
+    Authorization:`${localStorage.getItem("Admin jwt")}`
+  }
+ };
+   
+ const response=await axios.get(`http://localhost:5000/api/admin/products/category/${categoryname}`,jwtToken)
+ if(response.status===200){
+  setProducts(response.data.data)
+ }
+
+  
+} catch (error) {
+  console.log("error",error);
+  toast.error(error)
+}
+
+}
+
+useEffect(()=>{
+  productByCategory();
+},[])
+
+
+
+const deleteProduct = async (productId) => {
+  try {
+    const jwtToken = {
+      headers: { 
+        Authorization: `${localStorage.getItem("Admin jwt")}`,
+      },
+    };
+
+   
+    const response = await axios.delete(`http://localhost:5000/api/admin/product/${productId}`, jwtToken);
+
+    // console.log(response)
+
+    if (response.status === 200) {
+      setProducts(response.data.data);
+      toast.success("Product Deleted successfully");
+      productByCategory();
+      
+    } else {
+      toast.error("Failed to delete product");
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to delete product");
+  }
+};
 
   return (
     <>
@@ -33,14 +83,14 @@ export const Admindog = () => {
           <th scope='col'className='fw-bold'>Category</th>
           <th scope='col'className='fw-bold'>Description</th>
           <th scope='col'className='fw-bold'>Price</th>
-          <th scope='col' className='fw-bold'>Offer Price</th>
+        
           <th scope='col'className='fw-bold ms-3 '>Edit</th>
           <th scope='col'className='fw-bold ms-3'>Delete</th>
 
 
         </tr>
       </MDBTableHead>
-      {Dogproducts.map((item)=>(
+      {products && products.map((item)=>(
        <MDBTableBody>
         <tr>
           <td>
@@ -57,7 +107,7 @@ export const Admindog = () => {
               </div>
             </div> */}
 
-            <p className='mb-1'><strong> {item.id} </strong></p>
+            <p className='mb-1'><strong> {item._id} </strong></p>
 
           </td>
           <td>
@@ -67,7 +117,7 @@ export const Admindog = () => {
 
               <div className='d-flex align-items-center'>
               <img
-                src={item.src}
+                src={item.image}
                 alt=''
                 style={{ width: '45px', height: '45px' }}
                 className='rounded-circle'
@@ -79,14 +129,14 @@ export const Admindog = () => {
               Active
             </MDBBadge> */}
         <div >
-                <p className=' mb-1'>{item.name}</p>
+                <p className=' mb-1'>{item.title}</p>
                 
               </div>
 
 
           </td>
           <td>
-            {item.type}
+            {item.category}
           </td>
           <td>
             {/* <MDBBtn color='link' rounded size='sm'>
@@ -104,18 +154,12 @@ export const Admindog = () => {
 
           </td>
 
-          <td>
-               <p>{item.price2}</p>
-
-          </td>
-
+          
           <td>
             
-            {/* <MDBBtn color='link' rounded size='sm'>
-              Edit
-            </MDBBtn> */}
+          
              <MDBBtn outline className='mx-2' color='success' onClick={()=>{
-              navigate(`/adminedit/${item.id}`)
+              navigate(`/adminedit/${item._id}`)
              }}>
        Edit
       </MDBBtn>
@@ -125,7 +169,7 @@ export const Admindog = () => {
              <td>
              <MDBBtn outline className='mx-2' color='danger'
               onClick={()=>{
-                deleteitem(item.id)}}>
+                deleteProduct(item._id)}}>
         Delete
       </MDBBtn>
       </td>

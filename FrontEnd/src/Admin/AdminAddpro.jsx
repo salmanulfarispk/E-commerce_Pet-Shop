@@ -95,7 +95,7 @@ const AdminAddpro = () => {
 
       <MDBInput wrapperClass='mb-4'  id='descript' rows={3} label='description'  onChange={(e)=>setdescription(e.target.value)}  required />
       <MDBInput label='Price' id='typeNumber' type='number'  wrapperClass='mb-4' onChange={(e)=>setprice(e.target.value)} required />
-      {/* <MDBInput label='Offer Price' id='offNumber' type='number'  wrapperClass='mb-4'required /> */}
+     
       
       
       

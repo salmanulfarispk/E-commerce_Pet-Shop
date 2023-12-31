@@ -21,11 +21,11 @@ router
 .get("/Allusers/:id",Trycatchmiddleware(admincontroller.viewById)) 
 .post("/products",imageuploading,Trycatchmiddleware(admincontroller.addproducts))
 .get("/products",Trycatchmiddleware(admincontroller.viewAllproducts))
-.delete("/products",Trycatchmiddleware(admincontroller.deleteproduct))
-.put("/products",Trycatchmiddleware(admincontroller.editproducts))
+.delete("/product/:id",Trycatchmiddleware(admincontroller.deleteproduct))
+.patch("/product",Trycatchmiddleware(admincontroller.editproducts))
 .get("/orders",Trycatchmiddleware(admincontroller.viewOrderDetails))
-.get("/RevenueStatus",Trycatchmiddleware(admincontroller.status)) 
-
+.get("/RevenueStatus",Trycatchmiddleware(admincontroller.status))  
+.get("/product/:id",Trycatchmiddleware(admincontroller.productByid))
  .get("/products/category/:categoryname",Trycatchmiddleware(admincontroller.productByCategory))
   
-module.exports=router
+module.exports=router  

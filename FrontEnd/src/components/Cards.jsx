@@ -20,10 +20,10 @@ const Cards = () => {
   return (
     <div>
          
-{/*      
+    
           <h2 className='mt-5 ms-3' style={{ textAlign: 'center', color:'black' }}>
         <strong>Recommended products</strong>
-      </h2> */}
+      </h2> 
 
     
   

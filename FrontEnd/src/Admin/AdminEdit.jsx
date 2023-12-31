@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
    
     MDBInput,
@@ -6,70 +6,88 @@ import {
 
   } from "mdb-react-ui-kit";
 import AdminNav from './AdminNav';
-import { MyContext } from '../Context';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 
 
 const AdminEdit = () => {
 
-
-  const {products,setProducts}=useContext(MyContext)
-    const navigate=useNavigate()
-  const { id }  = useParams()
-
-
- const editpro=products.find((item)=>
-     item.id ===  parseInt(id))  || {
-      
-      image:'',
-      name:'',
-      type:'',       
-      description:'',
-      price:'',
-      price2:''
-    
-   };
-
-  
-  
+  const {id}=useParams()
+ const [productData,setproductData]=useState({
+  id:"",   
+  title:"",
+  category:"",
+  price:"",
+  image:"",
+  description:""
+ });
 
 
-   const [ids]=useState(editpro.id.toString())    
-   const [image,setImage]=useState(editpro.src)     
-   const [Name,setName]=useState(editpro.name)     
-   const [Type,setType]=useState(editpro.type)
-   const [Description,setDescription]=useState(editpro.description)
-   const [price,setprice]=useState(editpro.price.toString())
-   const [offprice,setoffprice]=useState(editpro.price2.toString())
+ const fetchproduct=async()=>{
+  try {
+    const jwttoken={
+      headers:{
+        Authorization:`${localStorage.getItem("Admin jwt")}`
+      }
+    };
 
+    const response=await axios.get(`http://localhost:5000/api/admin/product/${id}`,jwttoken)
+    // console.log(response)
+    if(response.status===200){
+      const{_id,title,image,category,price,description}=response.data.data;
+      setproductData({
+        id:_id,
+        title,
+        image,
+        category,
+        price,
+        description,
+      });
+    }
+
+  } catch (error) {
+    console.error("Error fetching product data:", error);
+    toast.error("product not fetching")
+  }
+ }
+ useEffect(()=>{
+  fetchproduct();
+ },[id])
+
+
+const submitEdits=async(e)=>{
+    e.preventDefault();
+
+  try{
+    const jwttoken={
+      headers:{
+        Authorization:`${localStorage.getItem("Admin jwt")}`
+      }
+    }
+    const response=await axios.patch(`http://localhost:5000/api/admin/product`,productData,jwttoken)
+    // console.log(response)
+    if(response.status===200){
+      toast.success("product edited succesfully")
+    }
+
+  }catch(err){
+    console.error("Error editing product:", err);
+    toast.error(err.message)
+  }
+
+}
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
  
-   const onnSubmit=(e)=>{
-
-          e.preventDefault();
-
-          const updatedproducts={               
-          id:parseInt(ids),
-          name:Name,
-          src:image,                             
-          type:Type,
-          description:Description,
-          price:parseFloat(price),
-          price2:parseFloat(offprice)
-
-           };
-          
-          const updatedproductList=products.map((item)=>(
-               item.id === updatedproducts.id ?  updatedproducts : item   
-                      ))
-             
-
-       setProducts(updatedproductList)
-
-    // console.log(updatedproductList);
-    
-       navigate('/adminallproducts')
-   }
+  setproductData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+};
+ 
 
   return (
    
@@ -77,35 +95,21 @@ const AdminEdit = () => {
         <div><AdminNav/></div>
 
     <h3 className='mt-3 '>Edits products</h3><br/>
-    <form className='w-50 ms-2'  onSubmit={onnSubmit}>
-      <MDBInput id='src' type='text' value={image} wrapperClass='mb-4' label='image' required  
-          onChange={(e)=>{
-        setImage(e.target.value)  
-      }} />
-      <MDBInput type='text' id='nametext' value={Name} wrapperClass='mb-4' label='Name' required 
-      onChange={(e)=>{
-        setName(e.target.value)
-      }} />
+    <form className='w-50 ms-2'onSubmit={submitEdits}>
+      <MDBInput id='image' type='text' value={productData.image} wrapperClass='mb-4' label='image' onChange={handleChange} required  
+         />
+      <MDBInput type='text' id='title' value={productData.title} wrapperClass='mb-4' label='title' onChange={handleChange} required 
+      />
 
-      <MDBInput type='text' id='typetext' value={Type} wrapperClass='mb-4' label='Type' required 
-      onChange={(e)=>{
-        setType(e.target.value)
-      }} />
+      <MDBInput type='text' id='category' value={productData.category} wrapperClass='mb-4' label='category' onChange={handleChange} required 
+       />
        
   
-      <MDBInput wrapperClass='mb-4 mt-2' value={Description}  id='descript' rows={3} label='Description' required 
-      onChange={(e)=>{
-        setDescription(e.target.value)
-      }} />
-      <MDBInput label='Price' id='typeNumber' value={price}  type='number'  wrapperClass='mb-4' required 
-       onChange={(e)=>{
-        setprice(e.target.value)
-      }}/>
-      <MDBInput label='Offer Price' id='offNumber' value={offprice}  type='number'  wrapperClass='mb-4'required 
-       onChange={(e)=>{
-        setoffprice(e.target.value)
-      }} />
-      
+      <MDBInput wrapperClass='mb-4 mt-2' value={productData.description}  id='description' rows={3} label='description' onChange={handleChange} required 
+       />
+      <MDBInput label='Price' id='Price' value={productData.price}  type='number'  wrapperClass='mb-4' required onChange={handleChange}
+       />
+     
       
       
       <MDBBtn  className='mb-4  ms-2 ' color='info'>
@@ -113,11 +117,6 @@ const AdminEdit = () => {
       </MDBBtn>
       </form>
   
-
-
-
-
-
 
     </div>
   )
