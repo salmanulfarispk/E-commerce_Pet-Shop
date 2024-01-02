@@ -15,7 +15,7 @@ import axios from "axios";
 
 const AdminAddpro = () => {
 
-   const [products,setProducts]=useState([])
+   
    const navigate=useNavigate()
 
 

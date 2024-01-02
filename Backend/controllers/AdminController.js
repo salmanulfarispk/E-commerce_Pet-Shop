@@ -167,17 +167,20 @@ module.exports={
 
    editproducts: async(req,res)=>{
       const {value,error}= joiproductSchema.validate(req.body)
+      // console.log("vlu",value)
       if(error){
         return res.status(404).json({
           status:"error",
-          message:error.details[0].message
+          message:error.details[0].message 
         })
       }
 
-      const {id,title,image,price,category,description}=value;
+      const {id,title,image,price,category,description}=value
+   
       const product= await Allproducts.find()
+      // console.log("products",product)
       if(!product){
-        return res.status(404).json({
+        return res.status(404).json({ 
           status:"error",
           message:"product not found"
         })
@@ -185,7 +188,7 @@ module.exports={
       await Allproducts.findByIdAndUpdate({
         _id:id},
         {
-         title,
+         title:title,
          image,
          price,
          category,
@@ -193,6 +196,7 @@ module.exports={
         }
       )
 
+      console.log(Allproducts)
       res.status(200).json({
         status:"success",
         message:"product succesfully updated/edited",
@@ -211,8 +215,7 @@ viewOrderDetails: async(req,res)=>{
       status:"errror",
       message:"No Order Details "
     })
-  }
-
+  } 
   res.status(200).json({
     status:"success",
     message:"order details succesfully fetched ",
@@ -223,7 +226,7 @@ viewOrderDetails: async(req,res)=>{
 
 //Total revenue generated
 
-status: async(req,res)=>{
+status: async(req,res)=>{ 
   const Totalrevenue= await orderSchema.aggregate([
   {
     $group:{ _id:null,

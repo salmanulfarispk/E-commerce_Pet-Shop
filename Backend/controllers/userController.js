@@ -116,8 +116,9 @@ const username=user.username
    //user view all products
 
    viewAllProduct: async(req,res)=>{
-      const products=await Allproducts.find()
-      if(!products){
+      const products=await Allproducts.find()  
+      console.log(products)
+      if(!products || products.length === 0){
         return res.status(404).json({
             status:"error",
             message:"products not found"
@@ -125,8 +126,8 @@ const username=user.username
       }
       return res.status(200).json({
          status:"success",
-         message:"All products founded succesfully",
-         datas:{products}
+         message:"All products founded succesfully",  
+         data:products
       })
 
    },

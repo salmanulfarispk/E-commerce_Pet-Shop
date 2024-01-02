@@ -55,7 +55,7 @@ const deleteProduct = async (productId) => {
    
     const response = await axios.delete(`http://localhost:5000/api/admin/product/${productId}`, jwtToken);
 
-    // console.log(response)
+    // console.log(response) 
 
     if (response.status === 200) {
       setProducts(response.data.data);

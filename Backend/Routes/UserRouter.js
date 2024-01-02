@@ -12,13 +12,13 @@ router
 
 .post('/register',Trycatchmiddleware(usercontroler.userRegister))
 .post('/login',Trycatchmiddleware(usercontroler.userlogin))
-  
-    
-.use(verifyToken)
 
 .get('/products',Trycatchmiddleware(usercontroler.viewAllProduct))
 .get("/products/:id",Trycatchmiddleware(usercontroler.viewproductById))
 .get("/products/category/:categoryname",Trycatchmiddleware(usercontroler.productByCategory))
+    
+.use(verifyToken)
+
 .post("/:id/cart",Trycatchmiddleware(usercontroler. addToCart))
 .get("/:id/cart",Trycatchmiddleware(usercontroler.viewcart))
 .delete("/:id/cart/:proid",Trycatchmiddleware(usercontroler.dltCartProdct))
