@@ -146,8 +146,8 @@ const username=user.username
      return res.status(200).json({
          status:"success",
          message:"product founded succesfuly",
-         data:{product}
-      })
+         data:product
+      })    
 
    },
 
@@ -175,8 +175,7 @@ const username=user.username
    addToCart:async (req, res) => {
 
       const userId = req.params.id;
-      const user = await userSchemaData.findById(userId);
-
+      const user = await userSchemaData.findById(userId); 
       if (!user) {
       return res.status(404).json({
           status: "error",
@@ -187,16 +186,26 @@ const username=user.username
       const { productId } = req.body;
          //   console.log(productId);  
 
-      if (!productId) {
+      if (!productId) { 
       return res.status(404).json({
           status: "error",
           message: "Product Not Found",
       });
       }
-  
+
+
+      const isProductInCart = user.cart.some(item => item.productsId.equals(productId));
+
+      if (isProductInCart) {
+          return res.status(400).json({
+              status: "error",
+              message: "Product already in cart",
+          });
+      }
 
       const productObject = {
-          productsId: new  ObjectId(productId)      
+          productsId: new  ObjectId(productId),
+          quantity: req.body.quantity,      
       }
 
       try {
@@ -523,6 +532,42 @@ orderDetails: async(req,res)=>{
 
 
 },
+
+ //cart quantity
+
+ cartItemQuantity:async(req,res)=>{
+    const userId=req.params.id;
+    const { id,quantityChange }=req.body;
+
+    const user=await userSchemaData.findById(userId);
+    if (!user) { 
+      return res.status(404).json({ message: 'User not found' }) 
+    }
+
+    const cartitem=user.cart.id(id)
+    if (!cartitem) { 
+     return res.status(404).json({ message: 'Cart item not found' }) 
+   }
+
+   cartitem.quantity += quantityChange;
+
+   if(cartitem.quantity > 0){
+      await user.save();
+   }
+   res.status(200).json({
+      status: 'success',
+      message: 'Cart item quantity updated',
+      data: user.cart
+    });
+
+
+ },
+
+
+
+
+
+
 
 
 

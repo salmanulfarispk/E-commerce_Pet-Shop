@@ -103,7 +103,7 @@ const Allproducts = () => {
           </MDBCol>
             ))
       ):(
-        <p>No products available</p>
+        <p> products available</p>
       )}
           </MDBRow>
          </MDBContainer>

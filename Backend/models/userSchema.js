@@ -8,10 +8,12 @@ const bcrypt=require("bcrypt")
 const userSchema= new mongoose.Schema({
 
     name:String,
-    email:String,
+    email:String, 
     username:String,
     password:String, 
-    cart:[{ productsId: { type: mongoose.Schema.ObjectId, ref: "allproducts" } }],
+    cart:[{ productsId: { type: mongoose.Schema.ObjectId, ref: "allproducts" },
+    quantity: { type: Number, default: 1 },
+ }],
     wishlist:[{type:mongoose.Schema.ObjectId, ref:"allproducts"}],
     orders: [{ type: mongoose.Schema.ObjectId, ref: "orders" }]
 })

@@ -1,53 +1,79 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Form } from 'react-bootstrap';
 import Nav from '../components/Nav';
 import {MDBContainer,MDBCard,MDBBtn,MDBCol,MDBCardImage,MDBRipple,MDBRow,MDBCardBody, } from 'mdb-react-ui-kit';
 import Footer from '../components/Footer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MyContext } from '../Context';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { Axios } from '../App';
 
 
 
 const Viewproduct = () => {
   const navigate=useNavigate()
  
-  const {products,cartt,setCart,Loggedin}=useContext(MyContext)
+  const {products,setProducts}=useContext(MyContext)
 
   const {id}=useParams()
 
-  const maincard=products.filter((item)=>{         
-    return item.id==id
-  })                                                    
 
-  //  console.log(maincard)
-
-   const prdId=()=>{
-    if (Loggedin == false){
-        if(cartt.includes(maincard[0])){                     
-          alert("The product is already added to cart")          
-        }else{                                             
-         setCart(()=>([...cartt,...maincard]))                           
-          // alert("product succesfully added to your cart")   
-        }
-      }else {
-            alert("Must login ")
-            navigate('/login')
-        }
-   
-      
-   };
+  const userid=localStorage.getItem("userId")
     
+//  console.log( userid)
+
+ const fetchbyId=async()=>{
+  try {
+    
+  const response=await axios.get(`http://localhost:5000/api/users/products/${id}`)
+  
+  if(response.status===200){
+    setProducts(response.data.data  || [])
+  }
+  
+} catch (error) {
+  console.log("Error in fetching products");
+  toast.error("invalid product",error)
+}
+}
+useEffect(()=>{
+  fetchbyId();
+},[])
+
+
+
+const handleAddcart=async(id)=>{
+  try {
+    
+    // console.log(localStorage.getItem("jwt"));
+    const response = await Axios.post(`/api/users/${userid}/cart`,{ productId: id });
+    // console.log(response)
+    
+    if(response.status === 200){
+        await Axios.get(`/api/users/${userid}/cart `)
+         toast.success("product added to the cart!")
+    }
+
+    if(response.status === 400){
+       toast.error("Product already included to cart!!")
+    }
+  
+
+  } catch (error) {
+    console.log(error)
+    toast.error("error",error.response.data.message)
+  }
+ }
+
+
 
   return (
     <div>
-    
-
    <Nav/>
-      
-     
      <MDBContainer fluid >
       <MDBRow className="justify-content-center mb-0">
-      { maincard.map((item)=>(
+      
 
         <MDBCol md="12" xl="11">
        
@@ -62,7 +88,7 @@ const Viewproduct = () => {
                     className="bg-image rounded hover-zoom hover-overlay w-500"
                   >
                     <MDBCardImage 
-                      src={item.src}
+                      src={products.image}
                       fluid
                       className="w-100 "
                     />
@@ -75,54 +101,44 @@ const Viewproduct = () => {
                   </MDBRipple>
                 </MDBCol>
                 <MDBCol md="6">
-                  <h5><strong>{item.name}</strong></h5>
-                   <p>{item.description}</p>
+                  <h5><strong>{products.title}</strong></h5>
+                   <p>{products.description}</p>
                   <br/>
                  
                    
 
                   <div className="mt-1 mb-0 text-dark small">
                    
-                    <h4>Price:</h4> <h4 className="mb-1 me-1">{item.price2}</h4>
+                    <h4>Price:</h4> <h4 className="mb-1 me-1">{products.price}</h4>
                     <br/>
 
 
-                    <h6><strong>Quantity:
-                    {/* <div className="form-outline me-1" style={{ width: '100px' }}> */}
-                        <Form.Control type="number" defaultValue="1" className='w-25' />
-                      {/* </div> */}
-                      
-                       </strong>
-                    </h6>
+                  
                     
-                    <MDBBtn color="primary" size="sm" className="mt-2 w-50" 
-                      onClick={prdId} >
+                    <MDBBtn color="primary" size="sm" className="mt-2 w-50" id={products.id} onClick={()=>{
+                      handleAddcart(products._id)
+                    }}>
                       Add to Cart
                     </MDBBtn>
                    
-                  
-
-      
-                  
+            
 
                   </div>
                  
                   
 
-
-
-                  
-                  
                   {/* </div> */}
                  
                   <div className="d-flex flex-column mt-4">
-                    <MDBBtn outline color="primary" size="sm" className=" w-50"   onClick={prdId} >
+                    <MDBBtn outline color="primary" size="sm" className=" w-50" >
                        BUY NOW
                     </MDBBtn>
                     
                   </div>
 
-                  <h5 className='mt-5' style={{color:'blue'}} >→Back to shop</h5>
+                  <h5 className='mt-5' style={{color:'blue'}} >-→Back to shop</h5>
+
+
                 </MDBCol>
              
               </MDBRow>
@@ -133,12 +149,12 @@ const Viewproduct = () => {
 
             </MDBCol>
         
-        ))}
+        
       </MDBRow>
       </MDBContainer>
 
 
-
+     
 
       <h2 className='mt-5 ms-5' style={{  color:'black' }}>
         <strong>Related products</strong>

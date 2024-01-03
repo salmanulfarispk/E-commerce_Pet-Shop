@@ -11,7 +11,7 @@ const verifyToken=require("../middlewares/userAuthentication")
 router
 
 .post('/register',Trycatchmiddleware(usercontroler.userRegister))
-.post('/login',Trycatchmiddleware(usercontroler.userlogin))
+.post('/login',Trycatchmiddleware(usercontroler.userlogin)) 
 
 .get('/products',Trycatchmiddleware(usercontroler.viewAllProduct))
 .get("/products/:id",Trycatchmiddleware(usercontroler.viewproductById))
@@ -21,6 +21,7 @@ router
 
 .post("/:id/cart",Trycatchmiddleware(usercontroler. addToCart))
 .get("/:id/cart",Trycatchmiddleware(usercontroler.viewcart))
+.put("/:id/cart",Trycatchmiddleware(usercontroler.cartItemQuantity))
 .delete("/:id/cart/:proid",Trycatchmiddleware(usercontroler.dltCartProdct))
 .post("/:id/wishlist",Trycatchmiddleware(usercontroler.addTowishlist))
 .get("/:id/wishlist",Trycatchmiddleware(usercontroler.viewWishlist))

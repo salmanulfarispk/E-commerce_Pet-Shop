@@ -24,32 +24,16 @@ const Cart = () => {
    const{cartt,setCart}=useContext(MyContext)
 // console.log(cartt);
 
-   const increment=(id)=>{
-        
-       const updatedCart=cartt.map((item)=>{       // cartt,It contains multiple items that a user has added to their cart while shopping.
-            if (item.id===id){
-              return {...item,qty: item.qty+1}
-            }
-            return item;
-       })
+ 
 
-           setCart(updatedCart)
 
-   }
-        const decrement=(id)=>{
-          const updatedCart=cartt.map((item)=>{
-             if(item.id == id  &&  item.qty> 1){
-              return {...item, qty:item.qty -1}
-             }
-               return item;
-          })
-          setCart(updatedCart)      // Update the shopping cart with the new data.
-        }
-       
 
-        const deleteCart=(id)=>{ 
-              setCart((i)=>i.filter((item)=> item.id !== id
-              ))}
+
+
+
+
+
+
    
   return (
     

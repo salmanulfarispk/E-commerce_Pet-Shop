@@ -30,7 +30,7 @@ import axios from "axios"
 import toast,{Toaster} from 'react-hot-toast';
 
 export const Axios=axios.create({
-baseURL: process.env.REACT_BASE_URL,
+baseURL: process.env.REACT_APP_BASE_URL,
 headers: {
   "Content-Type":"application/json",
   "Authorization":localStorage.getItem("jwt")
