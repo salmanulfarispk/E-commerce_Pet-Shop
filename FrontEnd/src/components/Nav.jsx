@@ -12,11 +12,17 @@ import {
     MDBNavbarLink,
     MDBBtn,
     MDBInputGroup,
-    
+    MDBDropdown,
     MDBCollapse,
+    MDBDropdownToggle,
+    MDBDropdownMenu,
+    MDBDropdownItem
   } from 'mdb-react-ui-kit';
 import { useNavigate } from 'react-router-dom';
 import Search from '../Pages/Search';
+import { FaUser } from "react-icons/fa";
+import { FaHeartCircleExclamation } from "react-icons/fa6"
+import { FaRightToBracket } from "react-icons/fa6";
 import { MyContext } from '../Context';
 
 
@@ -106,6 +112,12 @@ const Nav = () => {
             <MDBNavbarItem>
               <MDBNavbarLink onClick={()=>navigate('/allproduct')}>All Products</MDBNavbarLink>
             </MDBNavbarItem>
+            
+            <MDBInputGroup className='mb-1  w-50 me-5 ' noBorder >
+        <input className='form-control ms-3 ' type='search' placeholder='Search....' onChange={(e)=>{
+               setsearchTerm(e.target.value)
+        }}  />
+      </MDBInputGroup>
 
 {/*           
           <MDBInputGroup className='mb-1  w-25 mx-auto ' noBorder >
@@ -139,24 +151,41 @@ const Nav = () => {
                 <img className='me-5' src='https://img.icons8.com/?size=30&id=TdZUZUq3XNh6&format=gif'  width={'30px'} height={'30px'}   onClick={()=>{
               navigate('/cart')}}/>
 
-
+{/* 
             <span>
-            {/* <MDBBtn className='bg-light me-5 text-dark' style={{boxShadow:'none'}}> */}
+           
             <img className='me-5' style={{backgroundColor:'white'}} src='https://img.icons8.com/?size=80&id=rrtYnzKMTlUr&format=png ' width={'40px'} height={'40px'} 
                 
           
            />  
-            {/* <i class="fas fa-user fa-lg" style={{color: "#123904"}}></i> */}
-            <strong>{username}</strong>
-           {/* </MDBBtn> */}</span>
-              
+             <i class="fas fa-user fa-lg" style={{color: "#123904"}}></i> 
+            <strong>{username}</strong> 
+           </span>
+               */}
+
+<MDBDropdown className='btn-group'  >
+      <MDBDropdownToggle split style={{ backgroundColor: 'white',padding:0  }}>
+      <MDBBtn className="btn btn-white ">
+         <FaUser style={{fontSize:"30px "}}/>
+         <br/>
+          {username}
+        </MDBBtn>
+      </MDBDropdownToggle>
+      <MDBDropdownMenu>
+      <MDBDropdownItem className=" ms-5">
+      <FaRightToBracket className="me-1"/>
+      {username}
+          </MDBDropdownItem>
+        <MDBDropdownItem onClick={()=>navigate('/wishlist')} className=" ms-5"> 
+        <FaHeartCircleExclamation />
+                Wishlist
+        </MDBDropdownItem>
+       
+      </MDBDropdownMenu>
+    </MDBDropdown>
             
            
-          <MDBInputGroup className='mb-1  w-50 me-5 ' noBorder >
-        <input className='form-control ms-3 ' type='search' placeholder='Search....' onChange={(e)=>{
-               setsearchTerm(e.target.value)
-        }}  />
-      </MDBInputGroup>
+         
           
         </MDBCollapse>
       </MDBContainer>

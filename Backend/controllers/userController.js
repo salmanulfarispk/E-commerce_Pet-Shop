@@ -217,7 +217,7 @@ const username=user.username
 
       } catch (error) {
       console.error(error);
-       return res.status(500).json({
+       return res.status(500).json({ 
           status: "error",
           message: "Internal Server Error",
       });
@@ -253,7 +253,7 @@ const username=user.username
    res.status(200).json({
       status:"success",
       message:"cart product fetched succesfully",
-      data: cartproducts
+      data: [cartproducts.cart]
    })
 
 
@@ -305,7 +305,7 @@ const username=user.username
          return res.status(404).json({
             message:"product not found"
          })
-      }
+      } 
  
  
     const  findproducts= await userSchemaData.findOne({_id:userId, wishlist: productId})

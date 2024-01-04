@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Form } from 'react-bootstrap';
+
 import Nav from '../components/Nav';
 import {MDBContainer,MDBCard,MDBBtn,MDBCol,MDBCardImage,MDBRipple,MDBRow,MDBCardBody, } from 'mdb-react-ui-kit';
 import Footer from '../components/Footer';
@@ -62,7 +62,7 @@ const handleAddcart=async(id)=>{
 
   } catch (error) {
     console.log(error)
-    toast.error("error",error.response.data.message)
+    toast.error(error.response.data.message)
   }
  }
 
@@ -115,7 +115,7 @@ const handleAddcart=async(id)=>{
 
                   
                     
-                    <MDBBtn color="primary" size="sm" className="mt-2 w-50" id={products.id} onClick={()=>{
+                    <MDBBtn color="primary" size="sm" className="mt-2 w-50" id={products._id} onClick={()=>{
                       handleAddcart(products._id)
                     }}>
                       Add to Cart

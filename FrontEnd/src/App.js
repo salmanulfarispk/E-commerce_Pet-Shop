@@ -5,7 +5,7 @@ import './Login.css'
 import Home from './components/Home';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import { MyContext } from './Context';
-
+import Wishlist from './Wishlist';
 import Dogfoods from './components/Dogfoods';
 import { useState } from 'react';
 import { ProductDatas } from './ProductDatas';
@@ -43,7 +43,7 @@ headers: {
 function App() {
 
   const[products,setProducts]=useState(ProductDatas)
-  const[cartt,setCart]=useState([])
+  const[cartt,setCartproduct]=useState([])
   const [user,setUser]=useState([])
   const [Loggedin,setLoggedin]=useState(false)
   const [username,setUsername]=useState([])
@@ -53,7 +53,7 @@ function App() {
     <>
     
 
-  <MyContext.Provider value={{products,setProducts,cartt,setCart,user,setUser,Loggedin,setLoggedin,username,setUsername}}>
+  <MyContext.Provider value={{products,setProducts,cartt,setCartproduct,user,setUser,Loggedin,setLoggedin,username,setUsername}}>
 
 <Toaster position="top-center" reverseOrder={false}/>
   
@@ -73,6 +73,7 @@ function App() {
 <Route path='/birdfoods' element={<Birdfoods/>}/>
 <Route path='/cart' element={<Cart/>}/>
 <Route path='/search' element={<Search/>}/>
+<Route path='/wishlist' element={<Wishlist/>}/>
 
 
 <Route path='/adminhome'element={<Adminhome/>}/>
