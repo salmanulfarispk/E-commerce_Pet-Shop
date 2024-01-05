@@ -12,6 +12,7 @@ router
 
 .post('/register',Trycatchmiddleware(usercontroler.userRegister))
 .post('/login',Trycatchmiddleware(usercontroler.userlogin)) 
+.post('/googleAuth',Trycatchmiddleware(usercontroler.googleAuthLogin))
 
 .get('/products',Trycatchmiddleware(usercontroler.viewAllProduct))
 .get("/products/:id",Trycatchmiddleware(usercontroler.viewproductById))

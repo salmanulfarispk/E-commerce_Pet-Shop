@@ -24,6 +24,7 @@ const Cart = () => {
 
    const navigate=useNavigate()
    const[cartt,setCartproduct]=useState([])
+   
 console.log(cartt);
 
  const userid=localStorage.getItem("userId")
@@ -109,10 +110,10 @@ const paymentcheckout=async()=>{
         <MDBCol md="12" xl="10">
         <h3 className='mt-5 text-dark'>YOUR CART</h3>
           <MDBCard className="shadow-0 border rounded-3 mt-5 mb-3">
-          {Array.isArray(cartt) && cartt.map((item)=>(
+          {Array.isArray(cartt) && cartt.map((item,index)=>(
           
            
-            <MDBCardBody key={item.productsId}>
+            <MDBCardBody key={item.productsId._id || index } >
               <MDBRow>
                 <MDBCol md="12" lg="3" className="mb-4 mb-lg-0">
                   <MDBRipple

@@ -250,10 +250,12 @@ const username=user.username
 
    const cartproducts= await userSchemaData.findOne({_id:userId}).populate("cart.productsId")
    //   console.log(cartproducts);
+   const products=cartproducts.cart
+   // console.log(products);
    res.status(200).json({
       status:"success",
       message:"cart product fetched succesfully",
-      data: [cartproducts.cart]
+      data: products
    })
 
 
@@ -423,12 +425,12 @@ dletwishlist:async(req,res)=>{
    
       const session = await stripe.checkout.sessions.create({
          payment_method_types: ["card"],
-         line_items: paymentItems,
+         line_items: paymentItems,   
          mode: "payment",
-         success_url: "http://localhost:3000/api/users/payment/success",
-         cancel_url: "http://localhost:3000/api/users/payment/cancel",
+         success_url: "http://localhost:3000/payment/success",
+         cancel_url: "http://localhost:3000/payment/cancel",
        });
-      //  console.log("strpsession",session);
+      //  console.log("strpsession",session); 
   if(!session){
    res.status(404).json({
       status:"failure",
@@ -564,7 +566,44 @@ orderDetails: async(req,res)=>{
  },
 
 
+//GoogleAuthentication
 
+googleAuthLogin:async(req,res)=>{
+   const {email, displayName}=req.body;
+
+ try {
+   
+  const existUser=await userSchemaData.findOne({email:email})
+  if(existUser){
+   const token=jwt.sign({email:existUser.email},process.USER_ACCES_TOKEN_SECRET,{expiresIn:8500})
+   res.status(201).json({
+      status:"success",
+      message:"Login successfull",
+      data:token,
+      userid:existUser
+   })
+  }
+   if(!existUser){
+      const user=new userSchemaData({username:displayName,email:email})
+      await user.save()
+      const token=jwt.sign({email: user.email},process.USER_ACCES_TOKEN_SECRET,{expiresIn:8500})
+      console.log("Token:",token)
+      const ExistUSer=await userSchemaData.findOne({email:email})
+
+      res.status(203).json({
+         message:"user logined succsefully",
+         data:token,
+         userid:ExistUSer
+      })
+   }
+
+
+ } catch (error) {
+   console.log(error)
+ }
+
+
+},
 
 
 

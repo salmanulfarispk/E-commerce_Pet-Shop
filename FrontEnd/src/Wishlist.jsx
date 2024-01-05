@@ -40,7 +40,7 @@ const Wishlist = () => {
      }
 
     } catch (error) {
-        toast.error("some error occur",error)
+      toast.error(error.message);
         console.log(error);
     }
   }

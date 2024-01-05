@@ -130,7 +130,9 @@ const handleAddcart=async(id)=>{
                   {/* </div> */}
                  
                   <div className="d-flex flex-column mt-4">
-                    <MDBBtn outline color="primary" size="sm" className=" w-50" >
+                    <MDBBtn outline color="primary" size="sm" className=" w-50" id={products._id} onClick={()=>{
+                      handleAddcart(products._id)
+                    }}>
                        BUY NOW
                     </MDBBtn>
                     

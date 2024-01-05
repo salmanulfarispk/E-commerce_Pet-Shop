@@ -28,6 +28,7 @@ import AdminAddpro from './Admin/AdminAddpro';
 import AdminEdit from './Admin/AdminEdit';
 import axios from "axios"
 import toast,{Toaster} from 'react-hot-toast';
+import Successpay from './Pages/Successpay';
 
 export const Axios=axios.create({
 baseURL: process.env.REACT_APP_BASE_URL,
@@ -43,7 +44,7 @@ headers: {
 function App() {
 
   const[products,setProducts]=useState(ProductDatas)
-  const[cartt,setCartproduct]=useState([])
+  
   const [user,setUser]=useState([])
   const [Loggedin,setLoggedin]=useState(false)
   const [username,setUsername]=useState([])
@@ -53,7 +54,7 @@ function App() {
     <>
     
 
-  <MyContext.Provider value={{products,setProducts,cartt,setCartproduct,user,setUser,Loggedin,setLoggedin,username,setUsername}}>
+  <MyContext.Provider value={{products,setProducts,user,setUser,Loggedin,setLoggedin,username,setUsername}}>
 
 <Toaster position="top-center" reverseOrder={false}/>
   
@@ -74,6 +75,7 @@ function App() {
 <Route path='/cart' element={<Cart/>}/>
 <Route path='/search' element={<Search/>}/>
 <Route path='/wishlist' element={<Wishlist/>}/>
+<Route path="/payment/success" element={<Successpay/>}/>
 
 
 <Route path='/adminhome'element={<Adminhome/>}/>

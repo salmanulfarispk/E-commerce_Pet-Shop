@@ -3,7 +3,11 @@ import { MDBInput,MDBBtn,MDBContainer,MDBCol,MDBRow,MDBCard,MDBCardBody } from '
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Nav from '../components/Nav';
-import { Axios } from '../App';
+import {  Axios } from '../App';
+import { GoogleButton } from "react-google-button"
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../FirebaseApi/Firebase';
+import axios from 'axios';
 
 
 
@@ -74,6 +78,37 @@ const Login = () => {
     }
   };
   
+ const GoogleLogin=async()=>{
+  try {
+      
+    const data=await signInWithPopup(auth,provider)
+    const credentials=GoogleAuthProvider.credentialFromResult(data)
+    const user=data.user
+    // console.log(credentials);
+    // console.log(data);
+
+    try {
+      
+    const response=await axios.post("http://localhost:5000/api/users/googleAuth",user)
+    if(response.status=== 201 || 203){
+      toast.success("login successfull")
+      localStorage.setItem("jwt",response.data.data)
+      localStorage.setItem("UserEmail",response.data.email)
+      localStorage.setItem("UserName",response.data.username)
+      localStorage.setItem("userId",response.data.id)
+       navigate("/")
+    }
+
+    } catch (error) {
+      toast.error(error)
+    }
+
+
+  } catch (error) {
+   alert(error) 
+  }
+ }
+
 
 
   return (
@@ -104,7 +139,15 @@ const Login = () => {
 
       <div className="text-center pt-1 mb-5 pb-1">
         <MDBBtn className="mb-4 w-100 gradient-custom-2" >Sign in</MDBBtn>
-        <a className="text-muted" href="#!">Forgot password?</a>
+
+        <GoogleButton
+                  className="w-100  mb-3 "
+               type="dark" 
+               onClick={GoogleLogin}
+                  />
+
+
+        <a className="text-muted " href="#!">Forgot password?</a>
       </div>
 
       <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
