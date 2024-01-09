@@ -1,5 +1,5 @@
 
-import { MDBInput,MDBBtn,MDBContainer,MDBCol,MDBRow,MDBCard,MDBCardBody } from 'mdb-react-ui-kit';
+import { MDBInput,MDBBtn,MDBContainer,MDBCol,MDBRow } from 'mdb-react-ui-kit';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Nav from '../components/Nav';
@@ -7,7 +7,7 @@ import {  Axios } from '../App';
 import { GoogleButton } from "react-google-button"
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../FirebaseApi/Firebase';
-import axios from 'axios';
+
 
 
 
@@ -86,16 +86,17 @@ const Login = () => {
     const user=data.user
     // console.log(credentials);
     // console.log(data);
+    // console.log("user",user);
 
     try {
       
-    const response=await axios.post("http://localhost:5000/api/users/googleAuth",user)
+    const response=await Axios.post("/api/users/googleAuth",user)
     if(response.status=== 201 || 203){
       toast.success("login successfull")
       localStorage.setItem("jwt",response.data.data)
-      localStorage.setItem("UserEmail",response.data.email)
-      localStorage.setItem("UserName",response.data.username)
-      localStorage.setItem("userId",response.data.id)
+      localStorage.setItem("UserEmail",response.data.userid.email)
+      localStorage.setItem("UserName",response.data.userid.username)
+      localStorage.setItem("userId",response.data.userid.id)
        navigate("/")
     }
 
@@ -108,6 +109,7 @@ const Login = () => {
    alert(error) 
   }
  }
+
 
 
 

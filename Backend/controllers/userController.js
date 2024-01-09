@@ -587,7 +587,7 @@ googleAuthLogin:async(req,res)=>{
       const user=new userSchemaData({username:displayName,email:email})
       await user.save()
       const token=jwt.sign({email: user.email},process.USER_ACCES_TOKEN_SECRET,{expiresIn:8500})
-      console.log("Token:",token)
+   
       const ExistUSer=await userSchemaData.findOne({email:email})
 
       res.status(203).json({
